@@ -1,18 +1,45 @@
 class AppStrings {
-  static const login = 'Login';
+  static const String e = 'E';
+  static const String commerce = 'Commerce';
+  static const String search = 'Search';
+  static const String login = 'Login';
+  static const String logOut = 'Logout';
   static const String register = 'Register';
-  static const email = 'email';
-  static const enterYourEmailLabel = 'Enter Your Email';
-  static const userName = 'UserName';
-  static const emailHint = 'Email';
-  static const enterYourPasswordLabel = 'Enter Your Password';
-  static const enterYourPassLabel = 'Enter Your Password';
-  static const enterUserNameLabel = 'Enter UserName';
+  static const String enterYourEmailLabel = 'Enter Your Email';
+  static const String userName = 'Full Name';
+  static const String email = 'Email';
+  static const String password = 'Password';
+  static const String phone = 'Phone Number';
+  static const String enterYourPasswordLabel = 'Enter Your Password';
+  static const String enterYourPassLabel = 'Enter Your Password';
+  static const String enterUserNameLabel = 'Enter UserName';
+  //validate
+  static const validateEmail = "must ";
+  static const validatePassword = "يرجى إدخال كلمة المرور ";
+  //profile
+  static const String profile = 'My Profile';
+
+  //details products
+  static const String information = 'Information';
+  static const String reviews = 'Reviews';
+  //cart
+  static const String cart = ' My Cart';
+  static const String addToCart = ' Add To Cart';
+  static const String added = ' Added';
+  static const String toCart = ' To Cart';
+  static const String totalPrice = ' Total Price:';
+
+  // StatusCode
+  static const String invalidInput = "Invalid input";
+  static const String formatException = "There is an error in the data";
+  static const String unauthorized = "unauthorized";
+  static const String serverFailure = 'Server error!';
+  static const String internetFailure = 'No internet connection';
+  static const String connectionError = 'Connection Error';
+  static const String forbidden = 'forbidden';
+  static const String somethingError = 'Something\'s Error';
+  static const String userNotFound = 'User Not Found';
+  // static const String stCode400 ="Invalid input";
   static const String noRouteFound = 'No Route Found';
-  static const String cachedRandomQuote = 'CACHED_RANDOM_QUOTE';
-  static const String contentType = 'Content-Type';
-  static const String applicationJson = 'application/json';
-  static const String serverFailure = 'Server Failure';
-  static const String cacheFailure = 'Cache Failure';
   static const String unexpectedError = 'Unexpected Error';
 }

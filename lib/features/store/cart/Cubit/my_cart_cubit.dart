@@ -15,7 +15,13 @@ class MyCartCubit extends Cubit<MyCartState> {
     if (pro == null) {
       cart.add(product);
     } else {
-      final newProduct = ProductCart(id: pro.id, name: pro.name, imageUrl: pro.imageUrl, cost: pro.cost, counter: pro.counter! + 1);
+      final newProduct = ProductCart(
+          id: pro.id,
+          category: pro.category,
+          image: pro.image,
+          price: pro.price,
+          counter: pro.counter! + 1,
+          title: pro.title);
       cart.removeWhere((element) => element.id == pro.id);
       cart.add(newProduct);
     }
@@ -25,7 +31,13 @@ class MyCartCubit extends Cubit<MyCartState> {
   void decreaseFromCart(List<ProductCart> cart, ProductCart product) {
     final pro = cart.firstWhereOrNull((element) => element.id == product.id);
     if (pro != null && pro.counter! > 1) {
-      final newProduct = ProductCart(id: pro.id, name: pro.name, imageUrl: pro.imageUrl, cost: pro.cost, counter: pro.counter! - 1);
+      final newProduct = ProductCart(
+          id: pro.id,
+          category: pro.category,
+          image: pro.image,
+          price: pro.price,
+          counter: pro.counter! - 1,
+          title: pro.title);
       cart.removeWhere((element) => element.id == pro.id);
       cart.add(newProduct);
       emit(MyCartState(productsCart: cart));
@@ -44,11 +56,11 @@ class MyCartCubit extends Cubit<MyCartState> {
     return state.productsCart;
   }
 
-  int getTotalProductsPrice() {
+  double getTotalProductsPrice() {
     final cart = state.productsCart;
-    int price = 0;
+    double price = 0;
     for (var product in cart) {
-      price += (product.counter ?? 1) * (product.cost ?? 1);
+      price += (product.counter ?? 1) * (product.price ?? 1);
     }
     return price;
   }

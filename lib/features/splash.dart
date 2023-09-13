@@ -84,3 +84,129 @@
 //     );
 //   }
 // }
+
+import 'package:e_commerce_app/core/utils/app_strings.dart';
+import 'package:e_commerce_app/core/utils/color_manger.dart';
+import 'package:e_commerce_app/core/widgets/custom_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+
+import '../common/constants/cash_helper.dart';
+import '../core/config/routing/router.dart';
+import '../core/utils/assets_manager.dart';
+
+class SplashPage extends StatefulWidget {
+  const SplashPage({Key? key}) : super(key: key);
+
+  @override
+  State<SplashPage> createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<SplashPage> {
+  void initState() {
+    if (CachHelper.sharedPreferences.getString('token') != null) {
+      goProductsPage();
+    } else {
+      goLoginPage();
+    }
+    super.initState();
+  }
+
+  Future<void> goLoginPage() async {
+    await Future.delayed(
+      const Duration(seconds: 8),
+      () => context.pushReplacementNamed(GRouter.config.authRoutes.login),
+    );
+  }
+
+  Future<void> goProductsPage() async {
+    await Future.delayed(
+      const Duration(seconds: 3),
+      () => context.goNamed(GRouter.config.productRoutes.productScreen),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: ColorManager.white,
+        body: Container(
+          height: 600,
+          color: ColorManager.white,
+          child: Padding(
+            padding: REdgeInsetsDirectional.only(top: 100, start: 20, end: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  allowDrawingOutsideViewBox: true,
+                  ImageAssets.splash,
+                  width: 299,
+                  height: 299,
+                  fit: BoxFit.cover,
+                ).animate(onComplete: (c) => c.repeat()).shimmer(
+                    delay: const Duration(milliseconds: 4000),
+                    duration: const Duration(milliseconds: 2500)),
+                10.verticalSpace,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const CustomText(
+                      txt: 'Welc',
+                      fontSize: 20,
+                    ),
+                    CustomText(
+                      txt: 'O',
+                      fontSize: 20,
+                      txtColor: ColorManager.primary,
+                    ),
+                    const CustomText(
+                      txt: 'me',
+                      fontSize: 20,
+                    ),
+                    5.horizontalSpace,
+                    const CustomText(
+                      txt: 't',
+                      fontSize: 20,
+                    ),
+                    CustomText(
+                      txt: 'O',
+                      fontSize: 20,
+                      txtColor: ColorManager.primary,
+                    ),
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CustomText(
+                      txt: AppStrings.e,
+                      txtColor: ColorManager.dark,
+                      fontSize: 40.sp,
+                      fontWeight: FontWeight.w800,
+                    ),
+                    CustomText(
+                      txt: AppStrings.commerce,
+                      txtColor: ColorManager.primary,
+                      fontSize: 40.sp,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ],
+                ).animate(onComplete: (c) => c.repeat()).shimmer(
+                    delay: const Duration(milliseconds: 3500),
+                    duration: const Duration(milliseconds: 2400)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

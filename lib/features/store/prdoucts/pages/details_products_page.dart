@@ -2,92 +2,38 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:e_commerce_app/core/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:line_icons/line_icons.dart';
+import '../../../../common/models/products_model.dart';
+import '../../../../core/config/routing/router.dart';
 import '../../../../core/utils/app_strings.dart';
 import '../../../../core/utils/color_manger.dart';
 import '../../cart/Cubit/my_cart_cubit.dart';
 import '../../cart/pages/my_cart_page.dart';
 import '../widgets/custom_button.dart';
 
-class ProductsDetails extends StatelessWidget {
-  const ProductsDetails(
-      {Key? key,
-      required this.image,
-      required this.title,
-      required this.description,
-      required this.category,
-      required this.price,
-      required this.id})
-      : super(key: key);
-  final String image;
-  final String title;
-  final String description;
-  final String category;
-  final double price;
-  final int id;
+class ProductsDetailsPage extends StatelessWidget {
+  const ProductsDetailsPage({Key? key, required this.pro}) : super(key: key);
+  final ProductsModel pro;
   Widget buildSliverAppBar() {
     return SliverAppBar(
-        elevation: 0.0,
         expandedHeight: 600.0,
         pinned: true,
         stretch: true,
         backgroundColor: ColorManager.white,
         flexibleSpace: FlexibleSpaceBar(
           centerTitle: true,
-          title: CustomText(
-            txt: category,
-            txtColor: ColorManager.dark,
-            fontSize: 25,
-            // textAlign: TextAlign.start,
-          ),
           background: Hero(
-            tag: category,
+            tag: pro.category!,
             child: Image.network(
-              image,
+              pro.image!,
               fit: BoxFit.contain,
             ),
           ),
         ));
-  }
-
-  Widget productsInfo(String title, String value) {
-    return RichText(
-      maxLines: 10,
-      softWrap: true,
-      overflow: TextOverflow.ellipsis,
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: title,
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              color: ColorManager.dark,
-              fontWeight: FontWeight.bold,
-              fontSize: 18.0,
-            ),
-          ),
-          TextSpan(
-            text: value,
-            style: TextStyle(
-              color: ColorManager.secondaryGrey,
-              fontFamily: 'Poppins',
-              fontSize: 16.0,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildDivider(double endIndent) {
-    return Divider(
-      height: 30.0,
-      endIndent: endIndent, // Yellow line
-      color: ColorManager.primary,
-      thickness: 2.0,
-    );
   }
 
   @override
@@ -107,58 +53,112 @@ class ProductsDetails extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      CustomText(
+                        txt: pro.title!,
+                        height: 2,
+                        fontWeight: FontWeight.w800,
+                      ),
                       20.verticalSpace,
-                      productsInfo(
-                        AppStrings.description,
-                        description,
+                      Row(
+                        children: [
+                          CustomText(
+                            txt: pro.category!,
+                            txtColor: ColorManager.secondaryGrey,
+                            fontSize: 18,
+                          ),
+                          const Spacer(),
+                          Icon(
+                            LineIcons.starAlt,
+                            color: ColorManager.amber,
+                          ),
+                          CustomText(
+                            txt: pro.rating!.rate.toString(),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                          5.horizontalSpace,
+                          CustomText(
+                            txt:
+                                '(${pro.rating!.count.toString()} ${AppStrings.reviews})',
+                            txtColor: ColorManager.secondaryGrey,
+                            fontSize: 16,
+                          ),
+                        ],
                       ),
-                      buildDivider(80.0),
-                      productsInfo(
-                        AppStrings.category,
-                        category,
-                      ),
-                      buildDivider(270.0),
-                      productsInfo(
-                        AppStrings.title,
-                        title,
-                      ),
-                      buildDivider(100.0),
-                      productsInfo(AppStrings.price, price.toString()),
-                      buildDivider(300.0),
                       20.verticalSpace,
-                      CustomOutlinedButton(
-                        text: AppStrings.addToCart,
-                        icon: LineIcons.addToShoppingCart,
-                        onTap: () {
-                          final cartCubit =
-                              BlocProvider.of<MyCartCubit>(context);
-                          final cart = cartCubit.getCart();
-                          final product = ProductCart(
-                            category: category,
-                            image: image,
-                            price: price,
-                            counter: 1,
-                            id: id,
-                            title: title,
-                          );
-                          cartCubit.addToCart(cart, product);
-                          print("${product.price} ");
-                          if (RegExp(r'^[a-z]').hasMatch(category)) {
-                            BotToast.showText(
-                                text: ' للسلة $category تمت إضافة ');
-                          } else {
-                            BotToast.showText(
-                                text: ' تمت إضافة $category للسلة ');
-                          }
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const MyCartPage(
-                                  isReview: false,
-                                ),
-                              ));
-                        },
-                      )
+                      const CustomText(
+                        txt: AppStrings.information,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 24,
+                      ),
+                      CustomText(
+                        txt: pro.description!,
+                        txtColor: ColorManager.secondaryGrey,
+                        fontSize: 17,
+                        height: 2,
+                      ),
+                      10.verticalSpace,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomText(
+                            txt: '\$${pro.price.toString()}',
+                            txtColor: ColorManager.dark,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 24,
+                          ),
+                          // 10.horizontalSpace,
+                          Expanded(
+                            child: Padding(
+                              padding: REdgeInsetsDirectional.only(
+                                  start: 90, end: 15, top: 0),
+                              child: CustomOutlinedButton(
+                                height: 52.h,
+                                text: AppStrings.addToCart,
+                                icon: Icons.add,
+                                fontSize: 16,
+                                color: ColorManager.btnColor,
+                                onTap: () {
+                                  final cartCubit =
+                                      BlocProvider.of<MyCartCubit>(context);
+                                  final cart = cartCubit.getCart();
+                                  final product = ProductCart(
+                                    category: pro.category,
+                                    image: pro.image,
+                                    price: pro.price,
+                                    counter: 1,
+                                    id: pro.id,
+                                    title: pro.title,
+                                  );
+                                  cartCubit.addToCart(cart, product);
+                                  print("${product.price} ");
+                                  if (RegExp(r'^[a-z]')
+                                      .hasMatch(pro.category!)) {
+                                    BotToast.showText(
+                                        text:
+                                            '${AppStrings.added}${pro.category}${AppStrings.toCart} ');
+                                  } else {
+                                    BotToast.showText(
+                                        text:
+                                            '${AppStrings.added}${pro.category}${AppStrings.toCart} ');
+                                  }
+                                  // context.go(
+                                  //     "${GRouter.config.productRoutes.productScreen}/${GRouter.config.productRoutes.productDetails}/${GRouter.config.productRoutes.cart}",
+                                  //     extra: false);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const MyCartPage(isReview: false),
+                                      ));
+                                },
+                              ).animate().flipV(
+                                  delay: const Duration(milliseconds: 700)),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),

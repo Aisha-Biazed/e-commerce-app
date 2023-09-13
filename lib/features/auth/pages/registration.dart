@@ -3,7 +3,9 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:e_commerce_app/core/widgets/custom_text.dart';
 import 'package:e_commerce_app/core/widgets/custom_text_field.dart';
 import 'package:e_commerce_app/features/auth/cubit/states.dart';
+import 'package:e_commerce_app/features/store/prdoucts/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,7 +17,8 @@ import '../../../../core/config/routing/router.dart';
 import '../../../../core/utils/app_strings.dart';
 import '../../../../core/utils/assets_manager.dart';
 import '../../../../core/utils/color_manger.dart';
-import '../../cubit/cubit.dart';
+import '../../../common/constants/cash_helper.dart';
+import '../cubit/cubit.dart';
 
 class Registration extends StatefulWidget {
   const Registration({super.key});
@@ -25,10 +28,12 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-  final GlobalKey<FormBuilderState> _formkey = GlobalKey<FormBuilderState>();
-  TextEditingController userNameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController userNameController = TextEditingController(text: "");
+  TextEditingController passwordController = TextEditingController(text: "");
+  TextEditingController emailController = TextEditingController(text: "");
+  final DilocodeFoucs = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,63 +41,83 @@ class _RegistrationState extends State<Registration> {
         padding: REdgeInsetsDirectional.only(start: 17, end: 17, top: 15),
         child: BlocBuilder<AuthCubit, AuthStates>(
           builder: (context, state) {
-            return Center(
-              child: FormBuilder(
-                key: _formkey,
-                child: ListView(
-                  children: [
-                    const RSizedBox(
-                      height: 100,
-                    ),
-                    RSizedBox(
-                        height: 200,
-                        width: MediaQuery.of(context).size.width,
-                        child: SvgPicture.asset(
-                          allowDrawingOutsideViewBox: true,
-                          ImageAssets.register,
-                          width: 40,
-                          height: 40,
-                        )),
-                    33.verticalSpace,
-                    const CustomText(
-                      txt: AppStrings.register,
-                      textAlign: TextAlign.start,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    30.verticalSpace,
-                    CustomTextFormField(
-                      controller: userNameController,
-                      labelText: AppStrings.enterUserNameLabel,
-                      maxLines: 1,
-                      readOnly: false,
-                      icon: LineIcons.userCheck,
-                    ),
-                    20.verticalSpace,
-                    CustomTextFormField(
-                      controller: emailController,
-                      labelText: AppStrings.enterYourEmailLabel,
-                      icon: LineIcons.at,
-                      readOnly: false,
-                      maxLines: 1,
-                    ),
-                    20.verticalSpace,
-                    CustomTextFormField(
-                      controller: passwordController,
-                      labelText: AppStrings.enterYourPasswordLabel,
-                      isPasswordFiled: true,
-                      readOnly: false,
-                      suffexIcon: Icon(
-                        Icons.remove_red_eye_outlined,
-                        color: ColorManager.primary,
+            return BlocListener<AuthCubit, AuthStates>(
+              listener: (context, state) {
+                if (state is CreateSuccessState) {
+                  context.goNamed(GRouter.config.productRoutes.productScreen);
+                }
+              },
+              child: Center(
+                child: Form(
+                  key: _formKey,
+                  child: ListView(
+                    children: [
+                      const RSizedBox(
+                        height: 100,
                       ),
-                      icon: LineIcons.alternateUnlock,
-                      maxLines: 1,
-                    ),
-                    20.verticalSpace,
-                    FadeInLeft(
-                      delay: const Duration(milliseconds: 3200),
-                      child: ConditionalBuilder(
+                      RSizedBox(
+                          height: 190,
+                          width: MediaQuery.of(context).size.width,
+                          child: SvgPicture.asset(
+                            allowDrawingOutsideViewBox: true,
+                            ImageAssets.register,
+                            fit: BoxFit.fitHeight,
+                            width: 40,
+                            height: 40,
+                          )),
+                      33.verticalSpace,
+                      const CustomText(
+                        txt: AppStrings.register,
+                        textAlign: TextAlign.start,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      30.verticalSpace,
+                      CustomTextFormField(
+                        controller: userNameController,
+                        labelText: AppStrings.enterUserNameLabel,
+                        maxLines: 1,
+                        readOnly: false,
+                        icon: LineIcons.userCheck,
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            DilocodeFoucs.requestFocus();
+                            return AppStrings.validateEmail;
+                          }
+                        },
+                      ),
+                      20.verticalSpace,
+                      CustomTextFormField(
+                        controller: emailController,
+                        labelText: AppStrings.enterYourEmailLabel,
+                        icon: LineIcons.at,
+                        readOnly: false,
+                        maxLines: 1,
+                        validator: (val) {
+                          if ((val!.isEmpty) &&
+                              !RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+                                  .hasMatch(val)) {
+                            return AppStrings.validateEmail;
+                          }
+                        },
+                      ),
+                      20.verticalSpace,
+                      CustomTextFormField(
+                        controller: passwordController,
+                        labelText: AppStrings.enterYourPasswordLabel,
+                        isPasswordFiled: true,
+                        readOnly: false,
+                        icon: LineIcons.alternateUnlock,
+                        maxLines: 1,
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            DilocodeFoucs.requestFocus();
+                            return AppStrings.validateEmail;
+                          }
+                        },
+                      ),
+                      20.verticalSpace,
+                      ConditionalBuilder(
                         fallback: (BuildContext context) => Center(
                           child: SpinKitFadingCircle(
                             color: ColorManager.primary,
@@ -101,20 +126,47 @@ class _RegistrationState extends State<Registration> {
                         condition: state is! CreateLoadingState,
                         builder: (BuildContext context) => ElevatedButton(
                           onPressed: () {
-                            // if (_formkey.currentState!.validate()) {
-                            AuthCubit.get(context).createUser(
-                              userName: userNameController.text.toString(),
-                              password: passwordController.text.toString(),
-                              email: emailController.text.toString(),
-                            );
-                            context.goNamed(GRouter.config.profileRoutes.profileScreen);
+                            if (_formKey.currentState!.validate()) {
+                              print(AuthCubit.get(context).password);
+                              print(AuthCubit.get(context).email);
+                              AuthCubit.get(context).createUser(
+                                userName: userNameController.text.toString(),
+                                password: passwordController.text.toString(),
+                                email: emailController.text.toString(),
+                              );
+                            }
                           },
-                          // },
                           child: const CustomText(txt: AppStrings.register),
-                        ),
+                        )
+                            .animate()
+                            .flipV(delay: const Duration(milliseconds: 700)),
                       ),
-                    ),
-                  ],
+                      10.verticalSpace,
+                      ElevatedButton(
+                          onPressed: () {
+                            context.goNamed(
+                                GRouter.config.authRoutes.profileScreen);
+                          },
+                          style: ButtonStyle(
+                            elevation: MaterialStateProperty.all(0.0),
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                ColorManager.white),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                side: BorderSide(color: ColorManager.primary),
+                              ),
+                            ),
+                          ),
+                          child: CustomText(
+                            txt: AppStrings.profile,
+                            txtColor: ColorManager.primary,
+                            fontWeight: FontWeight.w300,
+                          )),
+                      20.verticalSpace
+                    ],
+                  ),
                 ),
               ),
             );

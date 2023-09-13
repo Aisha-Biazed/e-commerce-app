@@ -3,8 +3,8 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
-import '../../../common/models/products_model.dart';
-import '../../../core/api/auth_repo.dart';
+import '../../../../common/models/products_model.dart';
+import '../../../../core/api/auth_repo.dart';
 
 part 'products_state.dart';
 

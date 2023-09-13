@@ -21,7 +21,7 @@ class ProductsModel {
     return ProductsModel(
       id: json["id"],
       title: json["title"],
-      price: json["price"],
+      price: double.parse(json["price"].toString()),
       description: json["description"],
       category: json["category"],
       image: json["image"],
@@ -41,7 +41,7 @@ class Rating {
 
   factory Rating.fromJson(Map<String, dynamic> json) {
     return Rating(
-      rate: json["rate"],
+      rate: double.parse(json["rate"].toString()),
       count: json["count"],
     );
   }

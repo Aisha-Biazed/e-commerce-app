@@ -1,36 +1,73 @@
 class ProfileModel {
-  late String id;
-  late String fullName;
-  late String phoneNumber;
-  late String email;
-  late String birthDate;
-  late String gender;
+  ProfileModel({
+    required this.id,
+    required this.email,
+    required this.username,
+    required this.password,
+    required this.phone,
+  });
 
-  ProfileModel(
-      {required this.id,
-      required this.fullName,
-      required this.phoneNumber,
-      required this.email,
-      required this.birthDate,
-      required this.gender});
+  final int? id;
+  final String? email;
+  final String? username;
+  final String? password;
+  final String? phone;
 
-  ProfileModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    fullName = json['fullName'];
-    phoneNumber = json['phoneNumber'];
-    email = json['email'];
-    birthDate = json['birthDate'];
-    gender = json['gender'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['fullName'] = this.fullName;
-    data['phoneNumber'] = this.phoneNumber;
-    data['email'] = this.email;
-    data['birthDate'] = this.birthDate;
-    data['gender'] = this.gender;
-    return data;
+  factory ProfileModel.fromJson(Map<String, dynamic> json) {
+    return ProfileModel(
+      id: json["id"],
+      email: json["email"],
+      username: json["username"],
+      password: json["password"],
+      phone: json["phone"],
+    );
   }
 }
+
+// class ProfileModel {
+//   ProfileModel({
+//     required this.address,
+//     required this.id,
+//     required this.email,
+//     required this.username,
+//     required this.password,
+//     required this.phone,
+//   });
+//
+//   final Address? address;
+//   final int? id;
+//   final String? email;
+//   final String? username;
+//   final String? password;
+//   final String? phone;
+//
+//   factory ProfileModel.fromJson(Map<String, dynamic> json){
+//     return ProfileModel(
+//       address: json["address"] == null ? null : Address.fromJson(json["address"]),
+//       id: json["id"],
+//       email: json["email"],
+//       username: json["username"],
+//       password: json["password"],
+//       phone: json["phone"],
+//     );
+//   }
+//
+// }
+//
+// class Address {
+//   Address({
+//     required this.city,
+//     required this.street,
+//   });
+//
+//   final String? city;
+//   final String? street;
+//
+//   factory Address.fromJson(Map<String, dynamic> json){
+//     return Address(
+//       city: json["city"],
+//       street: json["street"],
+//     );
+//   }
+//
+// }

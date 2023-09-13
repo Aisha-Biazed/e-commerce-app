@@ -8,8 +8,8 @@ import '../../../../core/config/routing/router.dart';
 import '../../../../core/utils/assets_manager.dart';
 import '../widgets/container_login.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class LoginPage extends StatelessWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +24,6 @@ class LoginScreen extends StatelessWidget {
               delay: const Duration(milliseconds: 3800),
               child: Image.asset(ImageAssets.login)),
           ContainerLogin(),
-
-          // Positioned(
-          //     top: 0, bottom: 0, left: 0, right: 0, child: ContainerLogin()),
         ],
       ),
     );

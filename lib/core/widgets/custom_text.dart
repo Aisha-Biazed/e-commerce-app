@@ -7,21 +7,28 @@ class CustomText extends StatelessWidget {
       this.fontSize = 18,
       this.txtColor,
       this.fontWeight,
-      this.textAlign})
+      this.textAlign,
+      this.height})
       : super(key: key);
   final String txt;
   final FontWeight? fontWeight;
   final double? fontSize;
   final Color? txtColor;
   final TextAlign? textAlign;
+  final double? height;
   @override
   Widget build(BuildContext context) {
     return Text(txt,
         textAlign: textAlign,
+        maxLines: 10,
+        softWrap: true,
         style: TextStyle(
-            fontSize: fontSize!,
-            fontWeight: fontWeight,
-            // fontFamily: 'sst-arabic', //"sst-arabic",
-            color: txtColor));
+          height: height,
+          fontSize: fontSize!,
+          fontWeight: fontWeight,
+          fontFamily: 'Poppins',
+          color: txtColor,
+          overflow: TextOverflow.ellipsis,
+        ));
   }
 }

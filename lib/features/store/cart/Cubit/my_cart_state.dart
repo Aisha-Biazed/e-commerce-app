@@ -8,29 +8,30 @@ class MyCartState {
 }
 
 class ProductCart {
-  ProductCart({
-    required this.id,
-    required this.name,
-    required this.imageUrl,
-    required this.cost,
-    required this.counter,
-  });
+  ProductCart(
+      {required this.id,
+      required this.category,
+      required this.image,
+      required this.price,
+      required this.counter,
+      required this.title});
 
   @override
   String toString() {
-    return 'ProductCart{id: $id, name: $name, imageUrl: $imageUrl, cost: $cost, counter: $counter}';
+    return 'ProductCart{id: $id, category: $category,title:$title, image: $image, price: $price, counter: $counter}';
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "productId": id,
+      "id": id,
       "quantity": counter,
     };
   }
 
-  final String? id;
-  final String? name;
-  final String? imageUrl;
-  final int? cost;
+  final int? id;
+  final String? category;
+  final String? title;
+  final String? image;
+  final double? price;
   final int? counter;
 }

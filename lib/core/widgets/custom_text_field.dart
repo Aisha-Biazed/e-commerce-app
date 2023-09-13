@@ -13,7 +13,7 @@ class CustomTextFormField extends StatelessWidget {
       this.hintText,
       this.color,
       required this.labelText,
-      this.controller,
+      required this.controller,
       this.icon,
       required this.readOnly,
       this.isPasswordFiled = false,
@@ -22,7 +22,7 @@ class CustomTextFormField extends StatelessWidget {
       this.initialValue})
       : super(key: key);
   final TextInputType? inputType;
-  final TextEditingController? controller;
+  final TextEditingController controller;
   final Widget? suffexIcon;
   final ValueSetter? onSaved;
   final ValueSetter? onChanged;
@@ -55,7 +55,7 @@ class CustomTextFormField extends StatelessWidget {
           // hintStyle: TextStyle(color: ColorManager.primary,),
           labelText: labelText,
           // hintStyle: TextStyle(color: ColorManager.dark),
-          labelStyle: TextStyle(color: ColorManager.hint, fontSize: 16),
+          labelStyle: TextStyle(color: ColorManager.grey, fontSize: 16),
           suffixIcon: suffexIcon,
           prefixIcon: Icon(
             icon,
@@ -67,7 +67,13 @@ class CustomTextFormField extends StatelessWidget {
               borderSide: BorderSide(color: Colors.grey.shade400)),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15.w),
-              borderSide: BorderSide(color: ColorManager.mainGrey)),
+              borderSide: BorderSide(color: ColorManager.grey)),
+          errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.w),
+              borderSide: const BorderSide(color: Colors.red, width: 2.0)),
+          focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.w),
+              borderSide: const BorderSide(color: Colors.red, width: 2.0)),
           hintText: hintText,
           filled: true,
           fillColor: ColorManager.mainGrey,

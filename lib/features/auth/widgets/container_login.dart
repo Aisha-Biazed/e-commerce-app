@@ -4,7 +4,6 @@ import 'package:e_commerce_app/core/utils/color_manger.dart';
 import 'package:e_commerce_app/core/widgets/custom_text.dart';
 import 'package:e_commerce_app/features/auth/cubit/cubit.dart';
 import 'package:e_commerce_app/features/auth/cubit/states.dart';
-import 'package:e_commerce_app/features/products/cubit/products_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -24,23 +23,21 @@ class ContainerLogin extends StatefulWidget {
 }
 
 class _ContainerLoginState extends State<ContainerLogin> {
-  TextEditingController userNameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
   GlobalKey<FormBuilderState> _formkey = GlobalKey<FormBuilderState>();
-
+  final emailFoucs = FocusNode();
   @override
   Widget build(BuildContext context) {
-    // AuthCubit.get(context).profileCubit();
+    TextEditingController userNameController = TextEditingController(text: "");
+    TextEditingController passwordController = TextEditingController(text: "");
     return BlocBuilder<AuthCubit, AuthStates>(
       builder: (context, state) {
-        return Expanded(
-          child: BlocListener<AuthCubit, AuthStates>(
-            listener: (context, state) {
-              if (state is LoginSuccessState) {
-                // context.goNamed(
-                //     GRouter.config.authRoutes.registration);
-              }
-            },
+        return BlocListener<AuthCubit, AuthStates>(
+          listener: (context, state) {
+            if (state is LoginSuccessState) {
+              context.goNamed(GRouter.config.productRoutes.productScreen);
+            }
+          },
+          child: Expanded(
             child: ListView(
               children: [
                 Container(
@@ -80,6 +77,12 @@ class _ContainerLoginState extends State<ContainerLogin> {
                               icon: LineIcons.at,
                               maxLines: 1,
                               readOnly: false,
+                              validator: (val) {
+                                if (val!.isEmpty) {
+                                  emailFoucs.requestFocus();
+                                  return AppStrings.validateEmail;
+                                }
+                              },
                             ),
                           ),
                           30.verticalSpace,
@@ -95,7 +98,12 @@ class _ContainerLoginState extends State<ContainerLogin> {
                               ),
                               readOnly: false,
                               icon: LineIcons.alternateUnlock,
-                              // te: TextAlignVertical.center,
+                              validator: (val) {
+                                if (val!.isEmpty) {
+                                  emailFoucs.requestFocus();
+                                  return AppStrings.validatePassword;
+                                }
+                              },
                             ),
                           ),
                           30.verticalSpace,
@@ -113,11 +121,12 @@ class _ContainerLoginState extends State<ContainerLogin> {
                                   // if (_formkey.currentState!.validate()) {
                                   print(userNameController.text);
                                   print(passwordController.text);
-                                  AuthCubit.get(context).login(
+                                  AuthCubit.get(context).loginCubit(
                                     userName:
                                         userNameController.text.toString(),
                                     password:
                                         passwordController.text.toString(),
+                                    context: context,
                                   );
                                 },
                                 // },
@@ -132,8 +141,9 @@ class _ContainerLoginState extends State<ContainerLogin> {
                                 onPressed: () {
                                   // AuthCubit.get(context).profileCubit();
                                   //
-                                  context.goNamed(
-                                      GRouter.config.authRoutes.registration);
+                                  context.go(
+                                    "${GRouter.config.authRoutes.login}/${GRouter.config.authRoutes.registration}",
+                                  );
                                 },
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: ColorManager.primary,

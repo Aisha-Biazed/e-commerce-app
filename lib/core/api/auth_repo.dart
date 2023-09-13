@@ -1,37 +1,39 @@
+import 'dart:convert';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../common/constants/cash_helper.dart';
 import '../../common/models/products_model.dart';
 import '../../common/models/profile_model.dart';
 import '../error/exception_handler.dart';
 import '../utils/app_strings.dart';
-import 'dio_factory.dart';
+import 'dio_helper.dart';
 import 'end_points.dart';
 
 class AuthRepo {
   late final Dio _dio;
 
   AuthRepo() {
-    _dio = DioFactory.instance.get();
+    _dio = DioHelper.instance.get();
   }
+
   Future<Either<String, String>> loginUser(
       {required String userName, required String password}) async {
     try {
-      final result = await _dio.post(EndPoints.login,
-          queryParameters: {'username': userName, 'password': password});
-      // final SharedPreferences prefs = await SharedPreferences.getInstance();
-      // await prefs.setString('token', result.data);
+      final data = {
+        'username': "mor_2314",
+        'password': "83r5^_",
+      };
+      final result = await _dio.post(EndPoints.login, data: data);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', result.data["token"]);
       print("SuccessfulDataLogin");
-      print(result.data);
-      return Right(result.data);
+      print('the Token${CachHelper.sharedPreferences.getString('token')}');
+      return Right(result.data["token"]);
     } catch (error) {
-      print("error =$error");
-      if (((error as DioError).response?.data as String)
-          .contains('User Not Found')) {
-        return const Left(AppStrings.userNotFound);
-      } else {
-        return Left(ExceptionHandler.handle(error));
-      }
+      print("Error: $error");
+      return Left(ExceptionHandler.handle(error as Exception));
     }
   }
 
@@ -55,11 +57,10 @@ class AuthRepo {
     }
   }
 
-  Future<Either<String, ProfileModel>> myProfile(int idUser) async {
+  Future<Either<String, ProfileModel>> myProfile() async {
     try {
       final result = await _dio.get(
         EndPoints.profile,
-        queryParameters: {'id': idUser},
       );
       print("SuccessfulDataProfile");
       return Right(ProfileModel.fromJson(result.data));
