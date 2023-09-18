@@ -14,6 +14,7 @@ import 'package:line_icons/line_icons.dart';
 import '../../../../core/config/routing/router.dart';
 import '../../../../core/utils/app_strings.dart';
 import '../../../../core/widgets/custom_text_field.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
 class ContainerLogin extends StatefulWidget {
   ContainerLogin({Key? key}) : super(key: key);
@@ -24,11 +25,10 @@ class ContainerLogin extends StatefulWidget {
 
 class _ContainerLoginState extends State<ContainerLogin> {
   GlobalKey<FormBuilderState> _formkey = GlobalKey<FormBuilderState>();
-  final emailFoucs = FocusNode();
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    TextEditingController userNameController = TextEditingController(text: "");
-    TextEditingController passwordController = TextEditingController(text: "");
     return BlocBuilder<AuthCubit, AuthStates>(
       builder: (context, state) {
         return BlocListener<AuthCubit, AuthStates>(
@@ -56,7 +56,7 @@ class _ContainerLoginState extends State<ContainerLogin> {
                     end: 17,
                   ),
                   child: SingleChildScrollView(
-                    child: Form(
+                    child: FormBuilder(
                       key: _formkey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,15 +74,18 @@ class _ContainerLoginState extends State<ContainerLogin> {
                             child: CustomTextFormField(
                               controller: userNameController,
                               labelText: AppStrings.enterUserNameLabel,
-                              icon: LineIcons.at,
-                              maxLines: 1,
-                              readOnly: false,
-                              validator: (val) {
-                                if (val!.isEmpty) {
-                                  emailFoucs.requestFocus();
-                                  return AppStrings.validateEmail;
-                                }
-                              },
+                              labelTextStyle: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 16,
+                                  color: ColorManager.secondaryGrey),
+                              prefixIcon: Icon(
+                                LineIcons.userCheck,
+                                color: ColorManager.primary,
+                              ),
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.required(),
+                              ]),
+                              name: 'username',
                             ),
                           ),
                           30.verticalSpace,
@@ -92,18 +95,23 @@ class _ContainerLoginState extends State<ContainerLogin> {
                               controller: passwordController,
                               isPasswordFiled: true,
                               labelText: AppStrings.enterYourPassLabel,
-                              suffexIcon: Icon(
+                              prefixIcon: Icon(
+                                LineIcons.alternateUnlock,
+                                color: ColorManager.primary,
+                              ),
+                              suffixIcon: Icon(
                                 Icons.remove_red_eye_outlined,
                                 color: ColorManager.primary,
                               ),
-                              readOnly: false,
-                              icon: LineIcons.alternateUnlock,
-                              validator: (val) {
-                                if (val!.isEmpty) {
-                                  emailFoucs.requestFocus();
-                                  return AppStrings.validatePassword;
-                                }
-                              },
+                              labelTextStyle: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 16,
+                                  color: ColorManager.secondaryGrey),
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.required(),
+                                FormBuilderValidators.minLength(6)
+                              ]),
+                              name: 'password',
                             ),
                           ),
                           30.verticalSpace,
@@ -118,18 +126,18 @@ class _ContainerLoginState extends State<ContainerLogin> {
                               condition: state is! LoginLoadingState,
                               builder: (BuildContext context) => ElevatedButton(
                                 onPressed: () {
-                                  // if (_formkey.currentState!.validate()) {
-                                  print(userNameController.text);
-                                  print(passwordController.text);
-                                  AuthCubit.get(context).loginCubit(
-                                    userName:
-                                        userNameController.text.toString(),
-                                    password:
-                                        passwordController.text.toString(),
-                                    context: context,
-                                  );
+                                  _formkey.currentState!.save();
+                                  _formkey.currentState!.validate();
+                                  if (_formkey.currentState!.isValid) {
+                                    context.read<AuthCubit>().loginCubit(
+                                          userName: _formkey
+                                              .currentState!.value['username'],
+                                          password: _formkey
+                                              .currentState!.value['password'],
+                                          context: context,
+                                        );
+                                  }
                                 },
-                                // },
                                 child: const CustomText(txt: AppStrings.login),
                               ),
                             ),
@@ -139,8 +147,6 @@ class _ContainerLoginState extends State<ContainerLogin> {
                             child: Center(
                               child: TextButton(
                                 onPressed: () {
-                                  // AuthCubit.get(context).profileCubit();
-                                  //
                                   context.go(
                                     "${GRouter.config.authRoutes.login}/${GRouter.config.authRoutes.registration}",
                                   );

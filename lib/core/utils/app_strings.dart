@@ -13,9 +13,6 @@ class AppStrings {
   static const String enterYourPasswordLabel = 'Enter Your Password';
   static const String enterYourPassLabel = 'Enter Your Password';
   static const String enterUserNameLabel = 'Enter UserName';
-  //validate
-  static const validateEmail = "must ";
-  static const validatePassword = "يرجى إدخال كلمة المرور ";
   //profile
   static const String profile = 'My Profile';
 

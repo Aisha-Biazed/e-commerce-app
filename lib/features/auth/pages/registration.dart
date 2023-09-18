@@ -11,6 +11,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:line_icons/line_icons.dart';
 import '../../../../core/config/routing/router.dart';
@@ -28,12 +29,15 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController userNameController = TextEditingController(text: "");
-  TextEditingController passwordController = TextEditingController(text: "");
-  TextEditingController emailController = TextEditingController(text: "");
-  final DilocodeFoucs = FocusNode();
-
+  // final _formKey = GlobalKey<FormState>();
+  // TextEditingController userNameController = TextEditingController(text: "");
+  // TextEditingController passwordController = TextEditingController(text: "");
+  // TextEditingController emailController = TextEditingController(text: "");
+  // final DilocodeFoucs = FocusNode();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  GlobalKey<FormBuilderState> _formkey = GlobalKey<FormBuilderState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,8 +52,8 @@ class _RegistrationState extends State<Registration> {
                 }
               },
               child: Center(
-                child: Form(
-                  key: _formKey,
+                child: FormBuilder(
+                  key: _formkey,
                   child: ListView(
                     children: [
                       const RSizedBox(
@@ -74,47 +78,66 @@ class _RegistrationState extends State<Registration> {
                       ),
                       30.verticalSpace,
                       CustomTextFormField(
-                        controller: userNameController,
+                        // controller: userNameController,
+                        keyboardType: TextInputType.name,
                         labelText: AppStrings.enterUserNameLabel,
-                        maxLines: 1,
-                        readOnly: false,
-                        icon: LineIcons.userCheck,
-                        validator: (val) {
-                          if (val!.isEmpty) {
-                            DilocodeFoucs.requestFocus();
-                            return AppStrings.validateEmail;
-                          }
-                        },
+                        labelTextStyle: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            color: ColorManager.secondaryGrey),
+                        prefixIcon: Icon(
+                          LineIcons.userCheck,
+                          color: ColorManager.primary,
+                        ),
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                        ]),
+                        name: 'username',
                       ),
                       20.verticalSpace,
                       CustomTextFormField(
-                        controller: emailController,
+                        // controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
                         labelText: AppStrings.enterYourEmailLabel,
-                        icon: LineIcons.at,
-                        readOnly: false,
-                        maxLines: 1,
-                        validator: (val) {
-                          if ((val!.isEmpty) &&
-                              !RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
-                                  .hasMatch(val)) {
-                            return AppStrings.validateEmail;
-                          }
-                        },
+                        labelTextStyle: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            color: ColorManager.secondaryGrey),
+                        prefixIcon: Icon(
+                          LineIcons.at,
+                          color: ColorManager.primary,
+                        ),
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                          FormBuilderValidators.email()
+                        ]),
+                        name: 'email',
+                        // validator: (val) {
+                        //   if ((val!.isEmpty) &&
+                        //       !RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+                        //           .hasMatch(val)) {
+                        //     return AppStrings.validateEmail;
+                        //   }
+                        // },
                       ),
                       20.verticalSpace,
                       CustomTextFormField(
-                        controller: passwordController,
+                        // controller: passwordController,
                         labelText: AppStrings.enterYourPasswordLabel,
                         isPasswordFiled: true,
-                        readOnly: false,
-                        icon: LineIcons.alternateUnlock,
-                        maxLines: 1,
-                        validator: (val) {
-                          if (val!.isEmpty) {
-                            DilocodeFoucs.requestFocus();
-                            return AppStrings.validateEmail;
-                          }
-                        },
+                        labelTextStyle: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            color: ColorManager.secondaryGrey),
+                        prefixIcon: Icon(
+                          LineIcons.alternateUnlock,
+                          color: ColorManager.primary,
+                        ),
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                          FormBuilderValidators.minLength(6)
+                        ]),
+                        name: 'password',
                       ),
                       20.verticalSpace,
                       ConditionalBuilder(
@@ -126,13 +149,15 @@ class _RegistrationState extends State<Registration> {
                         condition: state is! CreateLoadingState,
                         builder: (BuildContext context) => ElevatedButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              print(AuthCubit.get(context).password);
-                              print(AuthCubit.get(context).email);
+                            _formkey.currentState!.save();
+                            _formkey.currentState!.validate();
+                            if (_formkey.currentState!.isValid) {
                               AuthCubit.get(context).createUser(
-                                userName: userNameController.text.toString(),
-                                password: passwordController.text.toString(),
-                                email: emailController.text.toString(),
+                                userName:
+                                    _formkey.currentState!.value['username'],
+                                email: _formkey.currentState!.value['email'],
+                                password:
+                                    _formkey.currentState!.value['password'],
                               );
                             }
                           },

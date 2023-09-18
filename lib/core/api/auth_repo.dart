@@ -17,23 +17,21 @@ class AuthRepo {
   AuthRepo() {
     _dio = DioHelper.instance.get();
   }
-
   Future<Either<String, String>> loginUser(
       {required String userName, required String password}) async {
     try {
       final data = {
-        'username': "mor_2314",
-        'password': "83r5^_",
+        'username': userName,
+        'password': password,
       };
       final result = await _dio.post(EndPoints.login, data: data);
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', result.data["token"]);
+      await prefs.setString('token', result.data.toString());
       print("SuccessfulDataLogin");
-      print('the Token${CachHelper.sharedPreferences.getString('token')}');
-      return Right(result.data["token"]);
+      return Right(result.data["token"].toString());
     } catch (error) {
-      print("Error: $error");
-      return Left(ExceptionHandler.handle(error as Exception));
+      print("error =$error");
+      return const Left("SomeThing Error");
     }
   }
 
