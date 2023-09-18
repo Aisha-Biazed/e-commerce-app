@@ -63,16 +63,16 @@ class AuthCubit extends Cubit<AuthStates> {
     });
   }
 
-  String email = "";
-  String password = "";
-  String userName = "";
+  String email = '';
+  String password = '';
+  String userName = '';
   void getInfoFromRegister(
-      {required String email,
-      required String password,
-      required String userName}) {
-    email = email;
-    password = password;
-    userName = userName;
+      {required String valEmail,
+      required String valPassword,
+      required String valUserName}) {
+    email = valEmail;
+    password = valPassword;
+    userName = valUserName;
     emit(ProfileState());
   }
 }

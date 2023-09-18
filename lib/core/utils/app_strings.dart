@@ -3,7 +3,6 @@ class AppStrings {
   static const String commerce = 'Commerce';
   static const String search = 'Search';
   static const String login = 'Login';
-  static const String logOut = 'Logout';
   static const String register = 'Register';
   static const String enterYourEmailLabel = 'Enter Your Email';
   static const String userName = 'Full Name';
@@ -15,6 +14,7 @@ class AppStrings {
   static const String enterUserNameLabel = 'Enter UserName';
   //profile
   static const String profile = 'My Profile';
+  static const String logout = 'Logout';
 
   //details products
   static const String information = 'Information';

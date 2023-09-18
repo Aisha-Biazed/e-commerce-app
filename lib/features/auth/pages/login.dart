@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/config/routing/router.dart';
 import '../../../../core/utils/assets_manager.dart';
-import '../widgets/container_login.dart';
+import '../widgets/widget_login.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
